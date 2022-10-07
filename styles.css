@@ -10,8 +10,11 @@ body{
 
 .game-board{
     display: grid;
+    grid-template-columns: repeat(3, clamp(50px, min(20vh, 20vw), 200px));
+    grid-template-rows: repeat(3, clamp(50px, min(20vh, 20vw), 200px));
+    border: 4px solid black;
 }
 
 .cell{
-    
+    border: 4px solid black;
 }
