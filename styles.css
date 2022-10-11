@@ -58,7 +58,7 @@ body{
     grid-template-columns: repeat(3, clamp(50px, min(20vh, 20vw), 200px));
     grid-template-rows: repeat(3, clamp(50px, min(20vh, 20vw), 200px));
     background-color: beige;
-    
+    border: 3px solid black;
     
 }
 

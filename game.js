@@ -93,8 +93,8 @@ const PlayerFactory = function(letter, playerName){
 const gameModule = (function(){
     displayController.displayHeader("Welcome to the Game!");
     // initialize players
-    const firstPlayer = PlayerFactory("X", "Yusef");
-    const secondPlayer = PlayerFactory("O", "Halabi");
+    const firstPlayer = PlayerFactory("X", "Sam");
+    const secondPlayer = PlayerFactory("O", "Jack");
     displayController.displayName(firstPlayer.name, 1);
     displayController.displayName(secondPlayer.name, 2);
     displayController.displayWins(firstPlayer.wins, 1);
@@ -166,7 +166,6 @@ const gameModule = (function(){
                 displayController.displayHeader("It's a tie!");
                 endFlag = true;
             }
-            console.log(firstPlayer.patterns);
         })
     })
 
