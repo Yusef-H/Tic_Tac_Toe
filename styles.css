@@ -20,6 +20,11 @@ body{
     
     padding: 10px;
     margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: clamp(20px, min(6vw, 6vh), 100px);
+    font-weight: bold;
 }
 
 .player-info{
@@ -31,20 +36,22 @@ body{
     margin-bottom: 20px;
 }
 
-.player1{
+.player1, .player2{
     background-color: beige;
     width: clamp(50px, 40vw, 400px);
     height: clamp(20px, 10vh, 200px);
     border-radius: 8px;
     border: 3px solid black;
+
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    font-size: clamp(20px, min(5vw, 5vh), 100px);
+
 }
-.player2{
-    background-color: beige;
-    width: clamp(50px, 40vw, 400px);
-    height: clamp(20px, 10vh, 200px);
-    border-radius: 8px;
-    border: 3px solid black;
-}
+
 
 .game-board{
     display: grid;
@@ -61,4 +68,17 @@ body{
     justify-content: center;
     align-items: center;
     font-size: clamp(20px, min(5vw, 5vh), 100px);
+}
+
+.restart-btn{
+    margin-top: 10px;
+    width: clamp(50px, 30vw, 800px);
+    height: clamp(50px, 5vh, 200px);
+    border-radius: 8px;
+    background-color: beige;
+    border: 3px solid black;
+    font-size: clamp(10px, min(3vw, 3vh), 100px);
+}
+.restart-btn:hover{
+    background-color: rgb(245, 245, 182);
 }

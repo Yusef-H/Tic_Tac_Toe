@@ -23,6 +23,31 @@ const displayController = (function(){
         return false;
     }
 
+    const displayName = (name, playerNum) => {
+        const nameDisplay = document.querySelector(`.player${playerNum} > .name`);
+        nameDisplay.textContent = name;
+    }
+
+    const displayWins = (wins, playerNum) => {
+        const winsDisplay = document.querySelector(`.player${playerNum} > .wins`);
+        winsDisplay.textContent = "Wins: " + wins;
+    }
+    
+
+    const displayHeader = (content) => {
+        const headerElement = document.querySelector('.header');
+        headerElement.textContent = content;
+    }
+
+    const clearBoard = () => {
+        const gameBoard = Array.from(gameBoardElement.childNodes);
+        gameBoard.forEach((cell) => {
+            cell.textContent = "";
+        })
+    }
+
+
+
     const _createBoardCell = () => {
         const cell = document.createElement('div');
         cell.classList.add('cell');
@@ -34,7 +59,11 @@ const displayController = (function(){
     return {
         getGameBoardElement,
         renderBoard,
-        markSpot
+        markSpot,
+        displayName,
+        displayHeader,
+        displayWins,
+        clearBoard
     }
 })();
 
@@ -48,19 +77,29 @@ const PlayerFactory = function(letter, playerName){
             patterns.add(chosenCell.value);
         }    
     }
+    const clearPatterns = () => {
+        patterns.clear();
+    }
     return {
         name,
         wins,
         letter,
         patterns,
-        markSpot
+        markSpot,
+        clearPatterns
     }
 };
 
 const gameModule = (function(){
+    displayController.displayHeader("Welcome to the Game!");
     // initialize players
-    const firstPlayer = PlayerFactory("X", "yusef");
-    const secondPlayer = PlayerFactory("O", "halabi");
+    const firstPlayer = PlayerFactory("X", "Yusef");
+    const secondPlayer = PlayerFactory("O", "Halabi");
+    displayController.displayName(firstPlayer.name, 1);
+    displayController.displayName(secondPlayer.name, 2);
+    displayController.displayWins(firstPlayer.wins, 1);
+    displayController.displayWins(secondPlayer.wins, 2);
+    
     // initialize gameboard
     displayController.renderBoard();
     let turn = 1;
@@ -82,26 +121,45 @@ const gameModule = (function(){
         }
     }
 
+    const restartGame = () => {
+        displayController.clearBoard();
+        firstPlayer.clearPatterns();
+        secondPlayer.clearPatterns();
+        
+    }
+
     const boardElement = displayController.getGameBoardElement();
     const boardArray = Array.from(boardElement.childNodes);
+    let endFlag = false;
     boardArray.forEach((cell) => {
         cell.addEventListener('click', () => {
-            if(turn == 1)
+            if(turn == 1 && endFlag == false)
                 firstPlayer.markSpot(cell);
-            else
+            else if(endFlag == false)
                 secondPlayer.markSpot(cell);
             
             turn = 3 - turn;
-            if(checkWin(firstPlayer)){
-                console.log("first won");
+            if(checkWin(firstPlayer) && endFlag == false){
+                endFlag = true;
                 firstPlayer.wins++;
-
+                displayController.displayHeader(`${firstPlayer.name} Has Won This Round!`);
+                displayController.displayWins(firstPlayer.wins, 1);
+                
             }
-            console.log(firstPlayer.wins);
-            if(checkWin(secondPlayer)){
-                console.log("Second won");
+            if(checkWin(secondPlayer) && endFlag == false){
+                endFlag = true;
+                secondPlayer.wins++;
+                displayController.displayHeader(`${secondPlayer.name} Has Won This Round!`);
+                displayController.displayWins(secondPlayer.wins, 2);
             }
+            console.log(firstPlayer.patterns);
         })
+    })
+
+    const restartButton = document.querySelector('.restart-btn');
+    restartButton.addEventListener('click', () => {
+        restartGame();
+        endFlag = false;
     })
     
 })();
