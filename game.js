@@ -120,6 +120,16 @@ const gameModule = (function(){
             return false;
         }
     }
+    const tieCheck = (firstPlayer, secondPlayer) => {
+        const unionPatterns = new Set(firstPlayer.patterns);
+        for(const e of secondPlayer.patterns)
+            unionPatterns.add(e);
+        for(let i = 0; i < 9; i++){
+            if(!unionPatterns.has(i))
+                return false;
+        }
+        return true;
+    }
 
     const restartGame = () => {
         displayController.clearBoard();
@@ -151,6 +161,10 @@ const gameModule = (function(){
                 secondPlayer.wins++;
                 displayController.displayHeader(`${secondPlayer.name} Has Won This Round!`);
                 displayController.displayWins(secondPlayer.wins, 2);
+            }
+            if(tieCheck(firstPlayer, secondPlayer)){
+                displayController.displayHeader("It's a tie!");
+                endFlag = true;
             }
             console.log(firstPlayer.patterns);
         })
