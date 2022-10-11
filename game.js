@@ -13,13 +13,14 @@ const displayController = (function(){
         }
     };
 
-    const markSpot = (player, spotChoice) =>{
+    const markSpot = (letter, spotChoice) =>{
         const gameBoard = Array.from(gameBoardElement.childNodes);
         const chosenCell = gameBoard.find((cell) => spotChoice == cell);
         if(chosenCell.textContent == ""){
-            player.patterns.add(chosenCell.value);
-            chosenCell.textContent = player.letter;
+            chosenCell.textContent = letter;
+            return true;
         }
+        return false;
     }
 
     const _createBoardCell = () => {
@@ -38,18 +39,28 @@ const displayController = (function(){
 })();
 
 // letter is "X" or "O"
-const PlayerFactory = function(letter){
+const PlayerFactory = function(letter, playerName){
+    let name = playerName;
+    let wins = 0;
     let patterns = new Set();
+    const markSpot = (chosenCell) => {
+        if(displayController.markSpot(letter, chosenCell) == true){
+            patterns.add(chosenCell.value);
+        }    
+    }
     return {
+        name,
+        wins,
         letter,
-        patterns
+        patterns,
+        markSpot
     }
 };
 
 const gameModule = (function(){
     // initialize players
-    const firstPlayer = PlayerFactory("X");
-    const secondPlayer = PlayerFactory("O");
+    const firstPlayer = PlayerFactory("X", "yusef");
+    const secondPlayer = PlayerFactory("O", "halabi");
     // initialize gameboard
     displayController.renderBoard();
     let turn = 1;
@@ -75,11 +86,18 @@ const gameModule = (function(){
     const boardArray = Array.from(boardElement.childNodes);
     boardArray.forEach((cell) => {
         cell.addEventListener('click', () => {
-            displayController.markSpot((turn == 1 ? firstPlayer:secondPlayer), cell);
+            if(turn == 1)
+                firstPlayer.markSpot(cell);
+            else
+                secondPlayer.markSpot(cell);
+            
             turn = 3 - turn;
             if(checkWin(firstPlayer)){
                 console.log("first won");
+                firstPlayer.wins++;
+
             }
+            console.log(firstPlayer.wins);
             if(checkWin(secondPlayer)){
                 console.log("Second won");
             }
