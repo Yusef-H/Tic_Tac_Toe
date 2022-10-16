@@ -73,7 +73,9 @@ const PlayerFactory = function(letter, playerName){
     const markSpot = (chosenCell) => {
         if(displayController.markSpot(letter, chosenCell) == true){
             patterns.add(chosenCell.value);
+            return true;
         }    
+        return false;
     }
     const clearPatterns = () => {
         patterns.clear();
@@ -152,12 +154,15 @@ const gameModule = (function(){
     let endFlag = false;
     boardArray.forEach((cell) => {
         cell.addEventListener('click', () => {
-            if(turn == 1 && endFlag == false)
-                firstPlayer.markSpot(cell);
-            else if(endFlag == false)
-                secondPlayer.markSpot(cell);
+            if(turn == 1 && endFlag == false){
+                if(firstPlayer.markSpot(cell) == true)
+                   turn = 3 - turn;
+            }
+            else if(endFlag == false){
+                if(secondPlayer.markSpot(cell) == true)
+                    turn = 3-turn;
+            }
             
-            turn = 3 - turn;
             if(checkWin(firstPlayer) && endFlag == false){
                 endFlag = true;
                 firstPlayer.wins++;
