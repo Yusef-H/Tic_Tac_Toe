@@ -82,3 +82,58 @@ body{
 .restart-btn:hover{
     background-color: rgb(245, 245, 182);
 }
+
+.modal{
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.5);
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: 250ms opacity ease-in;
+}
+.visible{
+    opacity: 1;
+    pointer-events: auto;
+}
+.modal-container{
+    font-family: 'Kaushan Script', cursive;
+    font-size: clamp(30px, 3vw, 40px);
+    background-color: white;
+    width: max(40vw,400px);
+    padding: 10px;
+    border-radius: 8px;
+    border: 10px dashed black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.modal-container > h2{
+    justify-self: center;
+}
+
+.buttons-container{
+    align-self: center;
+    flex: 1;
+    justify-self: center;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.buttons-container > *{
+    font-weight: bold;
+    font-family: 'Indie Flower', cursive;
+    font-size: clamp(15px, 2vw, 25px);
+    padding: 10px;
+    background-color: black;
+    color: white;
+    border-radius: 8px;
+}

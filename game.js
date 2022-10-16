@@ -1,6 +1,8 @@
 
 const displayController = (function(){
     let gameBoardElement = document.querySelector('.game-board');
+    const modal = document.querySelector('.modal');
+    modal.classList.add('visible');
 
     const getGameBoardElement = () =>{
         return gameBoardElement;
@@ -46,15 +48,11 @@ const displayController = (function(){
         })
     }
 
-
-
     const _createBoardCell = () => {
         const cell = document.createElement('div');
         cell.classList.add('cell');
         return cell;
     }
-
-   
 
     return {
         getGameBoardElement,
@@ -93,12 +91,22 @@ const PlayerFactory = function(letter, playerName){
 const gameModule = (function(){
     displayController.displayHeader("Welcome to the Game!");
     // initialize players
-    const firstPlayer = PlayerFactory("X", "Sam");
-    const secondPlayer = PlayerFactory("O", "Jack");
-    displayController.displayName(firstPlayer.name, 1);
-    displayController.displayName(secondPlayer.name, 2);
-    displayController.displayWins(firstPlayer.wins, 1);
-    displayController.displayWins(secondPlayer.wins, 2);
+    const form = document.querySelector('form');
+    let firstPlayerName;
+    let secondPlayerName;
+    let firstPlayer, secondPlayer;
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        firstPlayerName = document.getElementById('player1').value;
+        secondPlayerName = document.getElementById('player2').value;
+        document.querySelector('.modal').classList.remove('visible');
+        firstPlayer = PlayerFactory("X", firstPlayerName);
+        secondPlayer = PlayerFactory("O", secondPlayerName);
+        displayController.displayName(firstPlayer.name, 1);
+        displayController.displayName(secondPlayer.name, 2);
+        displayController.displayWins(firstPlayer.wins, 1);
+        displayController.displayWins(secondPlayer.wins, 2);
+    })
     
     // initialize gameboard
     displayController.renderBoard();
@@ -135,6 +143,7 @@ const gameModule = (function(){
         displayController.clearBoard();
         firstPlayer.clearPatterns();
         secondPlayer.clearPatterns();
+        displayController.displayHeader("Let's play another round!")
         
     }
 
@@ -156,13 +165,13 @@ const gameModule = (function(){
                 displayController.displayWins(firstPlayer.wins, 1);
                 
             }
-            if(checkWin(secondPlayer) && endFlag == false){
+            else if(checkWin(secondPlayer) && endFlag == false){
                 endFlag = true;
                 secondPlayer.wins++;
                 displayController.displayHeader(`${secondPlayer.name} Has Won This Round!`);
                 displayController.displayWins(secondPlayer.wins, 2);
             }
-            if(tieCheck(firstPlayer, secondPlayer)){
+            else if(tieCheck(firstPlayer, secondPlayer) && endFlag == false){
                 displayController.displayHeader("It's a tie!");
                 endFlag = true;
             }
