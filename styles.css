@@ -103,12 +103,12 @@ body{
 }
 .modal-container{
     
-    font-size: clamp(30px, 3vw, 40px);
+    font-size: clamp(20px, 2vmin, 40px);
     background-color: white;
-    width: max(40vw,400px);
+    width: max(40vw,200px);
     padding: 10px;
     border-radius: 8px;
-    border: 10px dashed black;
+    border: 10px solid rgb(145, 64, 89);
     display: flex;
     justify-content: center;
     align-items: center;

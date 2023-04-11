@@ -1,5 +1,7 @@
 
 const displayController = (function(){
+
+    const BOARD_SIZE = 9;
     let gameBoardElement = document.querySelector('.game-board');
     const modal = document.querySelector('.modal');
     modal.classList.add('visible');
@@ -8,7 +10,7 @@ const displayController = (function(){
         return gameBoardElement;
     }
     const renderBoard = () => {
-        for(let i = 0; i < 9; i++){
+        for(let i = 0; i < BOARD_SIZE; i++){
             const cellElement = _createBoardCell();
             cellElement.value = i;
             gameBoardElement.appendChild(cellElement);
@@ -108,11 +110,13 @@ const gameModule = (function(){
         displayController.displayName(secondPlayer.name, 2);
         displayController.displayWins(firstPlayer.wins, 1);
         displayController.displayWins(secondPlayer.wins, 2);
+        displayController.displayHeader(firstPlayer.name + " turn");
     })
     
     // initialize gameboard
     displayController.renderBoard();
     let turn = 1;
+    
 
     const checkWin = (player) =>{
         const choiceSet = player.patterns;
@@ -152,8 +156,11 @@ const gameModule = (function(){
     const boardElement = displayController.getGameBoardElement();
     const boardArray = Array.from(boardElement.childNodes);
     let endFlag = false;
+    
     boardArray.forEach((cell) => {
         cell.addEventListener('click', () => {
+            if(!endFlag)
+                displayController.displayHeader((turn == 1 ? firstPlayer.name : secondPlayer.name) + " turn");
             if(turn == 1 && endFlag == false){
                 if(firstPlayer.markSpot(cell) == true)
                    turn = 3 - turn;
