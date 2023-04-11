@@ -70,7 +70,7 @@ body{
     font-size: clamp(20px, min(5vw, 5vh), 100px);
 }
 
-.restart-btn{
+.restart-btn, .round-btn{
     margin-top: 10px;
     width: clamp(50px, 10vw, 800px);
     height: clamp(50px, 7vh, 200px);
@@ -79,7 +79,7 @@ body{
     border: 3px solid black;
     font-size: clamp(10px, min(2vw, 2vh), 100px);
 }
-.restart-btn:hover{
+.restart-btn:hover, .round-btn:hover{
     background-color: rgb(245, 245, 182);
 }
 

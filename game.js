@@ -50,6 +50,14 @@ const displayController = (function(){
         })
     }
 
+    const isMarked = (cellToCheck) => {
+        const gameBoard = Array.from(gameBoardElement.childNodes);
+        const myCell = gameBoard.find((cell) => cellToCheck == cell);
+        if(myCell.textContent == "")
+            return false;
+        return true;
+    }
+
     const _createBoardCell = () => {
         const cell = document.createElement('div');
         cell.classList.add('cell');
@@ -60,6 +68,7 @@ const displayController = (function(){
         getGameBoardElement,
         renderBoard,
         markSpot,
+        isMarked,
         displayName,
         displayHeader,
         displayWins,
@@ -159,8 +168,8 @@ const gameModule = (function(){
     
     boardArray.forEach((cell) => {
         cell.addEventListener('click', () => {
-            if(!endFlag)
-                displayController.displayHeader((turn == 1 ? firstPlayer.name : secondPlayer.name) + " turn");
+            if(!endFlag && !displayController.isMarked(cell))
+                displayController.displayHeader((turn == 2 ? firstPlayer.name : secondPlayer.name) + " turn");
             if(turn == 1 && endFlag == false){
                 if(firstPlayer.markSpot(cell) == true)
                    turn = 3 - turn;
@@ -187,13 +196,24 @@ const gameModule = (function(){
                 displayController.displayHeader("It's a tie!");
                 endFlag = true;
             }
+
+            if(firstPlayer.wins == 5){
+                displayController.displayHeader(`${firstPlayer.name} Has Won The Game!`);
+            }
+            if(secondPlayer.wins == 5){
+                displayController.displayHeader(`${secondPlayer.name} Has Won The Game!`);
+            }
+
+
         })
     })
 
-    const restartButton = document.querySelector('.restart-btn');
-    restartButton.addEventListener('click', () => {
+    const roundButton = document.querySelector('.round-btn');
+    roundButton.addEventListener('click', () => {
         restartGame();
         endFlag = false;
     })
+
+    const restartButton = document.querySelector('.restart-btn');
     
 })();
