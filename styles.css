@@ -36,7 +36,7 @@ body{
     margin-bottom: 20px;
 }
 
-.player1, .player2{
+.player0, .player1{
     background-color: beige;
     width: clamp(50px, 40vw, 400px);
     height: clamp(20px, 10vh, 200px);

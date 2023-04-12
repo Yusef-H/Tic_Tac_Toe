@@ -115,31 +115,41 @@ const PlayerFactory = function(letter, playerName){
 
 
 const gameModule = (function(){
+    const PLAYER_X = 0;
+    const PLAYER_O = 1;
+
+    const state = {
+        turn: PLAYER_X,
+        players: [],
+        isRoundDone: true
+    };
+
     displayController.displayHeader("Welcome to the Game!");
-    // initialize players
+    displayController.renderBoard();
+
     const form = document.querySelector('form');
-    let firstPlayerName;
-    let secondPlayerName;
-    let firstPlayer, secondPlayer;
     form.addEventListener('submit', (event) => {
         event.preventDefault();
-        firstPlayerName = document.getElementById('player1').value;
-        secondPlayerName = document.getElementById('player2').value;
-        document.querySelector('.modal').classList.remove('visible');
-        firstPlayer = PlayerFactory("X", firstPlayerName);
-        secondPlayer = PlayerFactory("O", secondPlayerName);
-        displayController.displayName(firstPlayer.name, 1);
-        displayController.displayName(secondPlayer.name, 2);
-        displayController.displayWins(firstPlayer.wins, 1);
-        displayController.displayWins(secondPlayer.wins, 2);
-        displayController.displayHeader(firstPlayer.name + " turn");
+        initializeGame();
     })
     
-    // initialize gameboard
-    displayController.renderBoard();
-    let turn = 1;
-    
+    const initializeGame = () => {
+        let firstPlayerName = document.getElementById('player1').value;
+        let secondPlayerName = document.getElementById('player2').value;
+        document.querySelector('.modal').classList.remove('visible');
+        // create players
+        state.players = [PlayerFactory("X", firstPlayerName), PlayerFactory("O", secondPlayerName)]
 
+        //display players data
+        state.players.forEach((player, i) => {
+            displayController.displayName(player.name, i);
+            displayController.displayWins(player.wins, i);
+          });
+        
+        state.turn = PLAYER_X;
+        displayController.displayHeader("Press New Round to play")
+    }
+    
     const checkRoundWin = (player) =>{
         const choiceSet = player.patterns;
         if((player.patterns.has(0) && player.patterns.has(1) && player.patterns.has(2)) ||
@@ -169,63 +179,68 @@ const gameModule = (function(){
 
     const restartRound = () => {
         displayController.clearBoard();
-        firstPlayer.clearPatterns();
-        secondPlayer.clearPatterns();
-        displayController.displayHeader("Let's play another round!")
-        
+        state.players.forEach((player) => {
+            player.clearPatterns();
+        })
+        let checkTurn = state.turn == PLAYER_O;
+        showTurn();
     }
 
     const restartGame = () => {
         displayController.clearBoard();
-        firstPlayer.resetGameStatus();
-        secondPlayer.resetGameStatus();
-        displayController.displayWins(0, 1);
-        displayController.displayWins(0, 2);
-        displayController.displayHeader("Welcome to the game!");
+        state.players.forEach((player) => {
+            player.resetGameStatus();
+        })
+        displayController.displayWins(0, PLAYER_X);
+        displayController.displayWins(0, PLAYER_O);
+        displayController.displayHeader("Press New Round to play");
+    }
+
+    const showTurn = () => {
+        let checkTurn = state.turn == PLAYER_O;
+        displayController.displayHeader((checkTurn ?
+            state.players[PLAYER_O].name :
+            state.players[PLAYER_X].name) + " turn" +
+            " -- Mark: " + (checkTurn ?
+            "O" : "X"));
+    }
+
+    const updateWinner = (winner, playerNum) => {
+        state.isRoundDone = true;
+        winner.wins++;
+        displayController.displayHeader(`${winner.name} Has Won This Round!`);
+        displayController.displayWins(winner.wins, playerNum);
     }
 
     const boardElement = displayController.getGameBoardElement();
     const boardArray = Array.from(boardElement.childNodes);
-    let endRoundFlag = false;
-    
     boardArray.forEach((cell) => {
         cell.addEventListener('click', () => {
-            if(!endRoundFlag && !displayController.isMarked(cell))
-                displayController.displayHeader((turn == 2 ? firstPlayer.name : secondPlayer.name) + " turn");
-            if(turn == 1 && endRoundFlag == false){
-                if(firstPlayer.markSpot(cell) == true)
-                   turn = 3 - turn;
+            if(state.isRoundDone)
+                return;
+            
+            if(state.turn == PLAYER_X){
+                if(state.players[PLAYER_X].markSpot(cell) == true)
+                   state.turn = (state.turn == PLAYER_X) ? PLAYER_O : PLAYER_X;
             }
-            else if(endRoundFlag == false){
-                if(secondPlayer.markSpot(cell) == true)
-                    turn = 3-turn;
+            else{
+                if(state.players[PLAYER_O].markSpot(cell) == true)
+                    state.turn = (state.turn == PLAYER_X) ? PLAYER_O : PLAYER_X;
             }
             
-            if(checkRoundWin(firstPlayer) && endRoundFlag == false){
-                endRoundFlag = true;
-                firstPlayer.wins++;
-                displayController.displayHeader(`${firstPlayer.name} Has Won This Round!`);
-                displayController.displayWins(firstPlayer.wins, 1);
+            showTurn();
+            
+            if(checkRoundWin(state.players[PLAYER_X])){
+                updateWinner(state.players[PLAYER_X], PLAYER_X);
                 
             }
-            else if(checkRoundWin(secondPlayer) && endRoundFlag == false){
-                endRoundFlag = true;
-                secondPlayer.wins++;
-                displayController.displayHeader(`${secondPlayer.name} Has Won This Round!`);
-                displayController.displayWins(secondPlayer.wins, 2);
+            else if(checkRoundWin(state.players[PLAYER_O])){
+                updateWinner(state.players[PLAYER_O], PLAYER_O);
             }
-            else if(tieCheck(firstPlayer, secondPlayer) && endRoundFlag == false){
+            else if(tieCheck(state.players[PLAYER_X], state.players[PLAYER_O])){
                 displayController.displayHeader("It's a tie!");
-                endRoundFlag = true;
+                state.isRoundDone = true;
             }
-
-            if(firstPlayer.wins == 5){
-                displayController.displayHeader(`${firstPlayer.name} Has Won The Game!`);
-            }
-            if(secondPlayer.wins == 5){
-                displayController.displayHeader(`${secondPlayer.name} Has Won The Game!`);
-            }
-
 
         })
     })
@@ -233,13 +248,13 @@ const gameModule = (function(){
     const roundButton = document.querySelector('.round-btn');
     roundButton.addEventListener('click', () => {
         restartRound();
-        endRoundFlag = false;
+        state.isRoundDone = false;
     })
 
     const restartButton = document.querySelector('.restart-btn');
     restartButton.addEventListener('click', () => {
         restartGame();
-        endRoundFlag = false;
+        state.isRoundDone = true;
     })
 
 })();
