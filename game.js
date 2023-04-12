@@ -76,11 +76,14 @@ const displayController = (function(){
     }
 })();
 
+
+
 // letter is "X" or "O"
 const PlayerFactory = function(letter, playerName){
     let name = playerName;
     let wins = 0;
     let patterns = new Set();
+
     const markSpot = (chosenCell) => {
         if(displayController.markSpot(letter, chosenCell) == true){
             patterns.add(chosenCell.value);
@@ -88,8 +91,14 @@ const PlayerFactory = function(letter, playerName){
         }    
         return false;
     }
+
     const clearPatterns = () => {
         patterns.clear();
+    }
+
+    function resetGameStatus(){
+        this.wins = 0;
+        clearPatterns();
     }
     return {
         name,
@@ -97,9 +106,13 @@ const PlayerFactory = function(letter, playerName){
         letter,
         patterns,
         markSpot,
-        clearPatterns
+        clearPatterns,
+        resetGameStatus
     }
 };
+
+
+
 
 const gameModule = (function(){
     displayController.displayHeader("Welcome to the Game!");
@@ -127,7 +140,7 @@ const gameModule = (function(){
     let turn = 1;
     
 
-    const checkWin = (player) =>{
+    const checkRoundWin = (player) =>{
         const choiceSet = player.patterns;
         if((player.patterns.has(0) && player.patterns.has(1) && player.patterns.has(2)) ||
         (player.patterns.has(3) && player.patterns.has(4) && player.patterns.has(5)) ||
@@ -154,7 +167,7 @@ const gameModule = (function(){
         return true;
     }
 
-    const restartGame = () => {
+    const restartRound = () => {
         displayController.clearBoard();
         firstPlayer.clearPatterns();
         secondPlayer.clearPatterns();
@@ -162,39 +175,48 @@ const gameModule = (function(){
         
     }
 
+    const restartGame = () => {
+        displayController.clearBoard();
+        firstPlayer.resetGameStatus();
+        secondPlayer.resetGameStatus();
+        displayController.displayWins(0, 1);
+        displayController.displayWins(0, 2);
+        displayController.displayHeader("Welcome to the game!");
+    }
+
     const boardElement = displayController.getGameBoardElement();
     const boardArray = Array.from(boardElement.childNodes);
-    let endFlag = false;
+    let endRoundFlag = false;
     
     boardArray.forEach((cell) => {
         cell.addEventListener('click', () => {
-            if(!endFlag && !displayController.isMarked(cell))
+            if(!endRoundFlag && !displayController.isMarked(cell))
                 displayController.displayHeader((turn == 2 ? firstPlayer.name : secondPlayer.name) + " turn");
-            if(turn == 1 && endFlag == false){
+            if(turn == 1 && endRoundFlag == false){
                 if(firstPlayer.markSpot(cell) == true)
                    turn = 3 - turn;
             }
-            else if(endFlag == false){
+            else if(endRoundFlag == false){
                 if(secondPlayer.markSpot(cell) == true)
                     turn = 3-turn;
             }
             
-            if(checkWin(firstPlayer) && endFlag == false){
-                endFlag = true;
+            if(checkRoundWin(firstPlayer) && endRoundFlag == false){
+                endRoundFlag = true;
                 firstPlayer.wins++;
                 displayController.displayHeader(`${firstPlayer.name} Has Won This Round!`);
                 displayController.displayWins(firstPlayer.wins, 1);
                 
             }
-            else if(checkWin(secondPlayer) && endFlag == false){
-                endFlag = true;
+            else if(checkRoundWin(secondPlayer) && endRoundFlag == false){
+                endRoundFlag = true;
                 secondPlayer.wins++;
                 displayController.displayHeader(`${secondPlayer.name} Has Won This Round!`);
                 displayController.displayWins(secondPlayer.wins, 2);
             }
-            else if(tieCheck(firstPlayer, secondPlayer) && endFlag == false){
+            else if(tieCheck(firstPlayer, secondPlayer) && endRoundFlag == false){
                 displayController.displayHeader("It's a tie!");
-                endFlag = true;
+                endRoundFlag = true;
             }
 
             if(firstPlayer.wins == 5){
@@ -210,10 +232,14 @@ const gameModule = (function(){
 
     const roundButton = document.querySelector('.round-btn');
     roundButton.addEventListener('click', () => {
-        restartGame();
-        endFlag = false;
+        restartRound();
+        endRoundFlag = false;
     })
 
     const restartButton = document.querySelector('.restart-btn');
-    
+    restartButton.addEventListener('click', () => {
+        restartGame();
+        endRoundFlag = false;
+    })
+
 })();
