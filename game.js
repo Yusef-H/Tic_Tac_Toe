@@ -43,6 +43,12 @@ const displayController = (function(){
     const displayHeader = (content) => {
         const headerElement = document.querySelector('.header');
         headerElement.textContent = content;
+        if(content.includes('Has Won') || content.includes('tie')){
+            headerElement.classList.add('won');
+        }
+        else{
+            headerElement.classList.remove('won');
+        }
     }
 
     const clearBoard = () => {

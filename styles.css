@@ -27,6 +27,24 @@ body{
     font-weight: bold;
 }
 
+.header.won{
+    animation-name: winning;
+    animation-duration: 0.75s;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+}
+
+@keyframes winning{
+    from{
+        background-color: beige;
+        color: black;
+    }
+    to{
+        background-color: brown;
+        color: beige;
+    }
+}
+
 .player-info{
     width: clamp(50px, 80vw, 800px);
     height: clamp(50px, 10vh, 200px);
