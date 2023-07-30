@@ -1,4 +1,5 @@
 
+/* This Module is responsible for displaying results on the screen. */
 const displayController = (function(){
 
     const BOARD_SIZE = 9;
@@ -9,6 +10,8 @@ const displayController = (function(){
     const getGameBoardElement = () =>{
         return gameBoardElement;
     }
+
+
     const renderBoard = () => {
         for(let i = 0; i < BOARD_SIZE; i++){
             const cellElement = _createBoardCell();
@@ -17,9 +20,13 @@ const displayController = (function(){
         }
     };
 
+
+    // mark a spot on the grid.
     const markSpot = (letter, spotChoice) =>{
         const gameBoard = Array.from(gameBoardElement.childNodes);
         const chosenCell = gameBoard.find((cell) => spotChoice == cell);
+
+        // These are for animations. (css properties transition to them)
         if(chosenCell.textContent == ""){
             chosenCell.textContent = letter;
             chosenCell.style.fontSize = "clamp(20px, min(5vw, 5vh), 100px)"; 
@@ -29,20 +36,24 @@ const displayController = (function(){
         return false;
     }
 
+    // display the name of the players
     const displayName = (name, playerNum) => {
         const nameDisplay = document.querySelector(`.player${playerNum} > .name`);
         nameDisplay.textContent = name;
     }
 
+    // display the amount of wins each player has.
     const displayWins = (wins, playerNum) => {
         const winsDisplay = document.querySelector(`.player${playerNum} > .wins`);
         winsDisplay.textContent = "Wins: " + wins;
     }
     
 
+    // displays titles about whats going on in the game.
     const displayHeader = (content) => {
         const headerElement = document.querySelector('.header');
         headerElement.textContent = content;
+        // animation for win/tie.
         if(content.includes('Has Won') || content.includes('tie')){
             headerElement.classList.add('won');
         }
@@ -51,11 +62,12 @@ const displayController = (function(){
         }
     }
 
+    // clears the board for a new round.
     const clearBoard = () => {
         const gameBoard = Array.from(gameBoardElement.childNodes);
         gameBoard.forEach((cell) => {
             cell.textContent = "";
-            console.log(cell.tagName);
+            // restart animation values to initial value.
             if(cell.tagName === 'DIV'){
                 cell.style.fontSize = "12px";
                 cell.style.color = "brown"; 
@@ -63,6 +75,7 @@ const displayController = (function(){
         })
     }
 
+    // checks if a cell is marked.
     const isMarked = (cellToCheck) => {
         const gameBoard = Array.from(gameBoardElement.childNodes);
         const myCell = gameBoard.find((cell) => cellToCheck == cell);
@@ -90,8 +103,8 @@ const displayController = (function(){
 })();
 
 
-
-// letter is "X" or "O"
+/* This factory is responsible for creating players and
+   all of their data that is needed for the game. */
 const PlayerFactory = function(letter, playerName){
     let name = playerName;
     let wins = 0;
@@ -109,6 +122,7 @@ const PlayerFactory = function(letter, playerName){
         patterns.clear();
     }
 
+    // used normal functions so I can access this object.
     function resetGameStatus(){
         this.wins = 0;
         clearPatterns();
@@ -126,7 +140,7 @@ const PlayerFactory = function(letter, playerName){
 
 
 
-
+/* This module handles all the game logic and runs it. */
 const gameModule = (function(){
     const PLAYER_X = 0;
     const PLAYER_O = 1;
