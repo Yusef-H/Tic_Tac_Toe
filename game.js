@@ -22,6 +22,7 @@ const displayController = (function(){
         const chosenCell = gameBoard.find((cell) => spotChoice == cell);
         if(chosenCell.textContent == ""){
             chosenCell.textContent = letter;
+            chosenCell.style.fontSize = "clamp(20px, min(5vw, 5vh), 100px)"; 
             return true;
         }
         return false;
@@ -47,6 +48,9 @@ const displayController = (function(){
         const gameBoard = Array.from(gameBoardElement.childNodes);
         gameBoard.forEach((cell) => {
             cell.textContent = "";
+            console.log(cell.tagName);
+            if(cell.tagName === 'DIV')
+                cell.style.fontSize = "12px"; 
         })
     }
 
