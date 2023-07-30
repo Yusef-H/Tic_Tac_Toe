@@ -67,8 +67,15 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
+    color: brown;
     font-size: 12px;
-    transition: font-size 1s ease-out;
+    transition: font-size 1s ease-out, 
+        color 3s ease-out, 
+        background-color 2s;
+}
+
+.cell:hover{
+    background-color: aqua;
 }
 
 .restart-btn, .round-btn{

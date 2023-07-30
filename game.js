@@ -23,6 +23,7 @@ const displayController = (function(){
         if(chosenCell.textContent == ""){
             chosenCell.textContent = letter;
             chosenCell.style.fontSize = "clamp(20px, min(5vw, 5vh), 100px)"; 
+            chosenCell.style.color = "black"; 
             return true;
         }
         return false;
@@ -49,8 +50,10 @@ const displayController = (function(){
         gameBoard.forEach((cell) => {
             cell.textContent = "";
             console.log(cell.tagName);
-            if(cell.tagName === 'DIV')
-                cell.style.fontSize = "12px"; 
+            if(cell.tagName === 'DIV'){
+                cell.style.fontSize = "12px";
+                cell.style.color = "brown"; 
+            }
         })
     }
 
