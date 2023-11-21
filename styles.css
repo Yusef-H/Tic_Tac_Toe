@@ -1,17 +1,17 @@
-body{
-    background-color:brown;
-    height: 100vh;
+:root{
+    background-color: brown;
+    height: calc(100vh - 40px);
     width: 100vw;
-
+    padding-top: 40px; 
+}
+body{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
 }
 
 .header{
-    flex-shrink: 0;
     background-color: beige;
     height: clamp(50px, 15vh, 200px);
     width: clamp(50px, 80vw, 800px);
@@ -139,6 +139,13 @@ body{
     justify-content: center;
     align-items: center;
     flex-direction: column;
+}
+
+.modal-container fieldset {
+    width: max(35vw, 180px);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 .modal-container > h2{
